@@ -3,14 +3,9 @@ const bcrypt = require("bcryptjs");
 
 const UserSchema = new Schema(
   {
-    name: String,
-    surname: String,
     password: String,
     email: String,
-    role: {
-      type: String,
-      enum: ["Admin", "User"],
-    },
+    favourites:[],
     refreshTokens: [
       {
         token: {
@@ -43,7 +38,6 @@ UserSchema.statics.findByCredentials = async function (email, plainPW) {
     return null
   }
 }
-
 UserSchema.pre("save", async function (next) {
   const user = this;
   const plainPW = user.password;

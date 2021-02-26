@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken");
 const User = require("../services/users/schema");
-
+const mongoose = require("mongoose")
 const authenticate = async (user) => {
   try {
-    const newAccessToken = await generateJWT({ _id: user._id });
+    const newAccessToken = await generateJWT({ _id: user._id }); // why do we pass user id?
     const newRefreshToken = await generateRefreshJWT({ _id: user._id });
 
     user.refreshTokens = user.refreshTokens.concat({ token: newRefreshToken });
@@ -21,24 +21,29 @@ const generateJWT = (payload) =>
     jwt.sign(
       payload,
       process.env.JWT_SECRET,
-      { expiresIn: 6 },
+      { expiresIn: "1 week" },
       (err, token) => {
         if (err) rej(err);
         res(token);
       }
     )
   );
-
-const verifyJWT = (token) =>
-console.log("token to verify ", token)
-console.log("secret ->", process.env.JWT_SECRET)
-
-  new Promise((res, rej) =>
-    jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) rej(err + "yea here we are");
-      res(decoded);
-    })
-  );
+addToFavourites = async (id, city) => {
+  try {
+    const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(id),{$addToSet:{favourites:city}});
+    console.log(user)
+    return user;
+  } catch (err) {
+    console.log("Problem with adding to favourites -> ", err);
+  }
+};
+verifyJWT = (token) => {
+  console.log("token to verify ", token);
+  console.log("secret ->", process.env.JWT_SECRET);
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  console.log(decoded);
+  return decoded;
+};
 
 const generateRefreshJWT = (payload) =>
   new Promise((res, rej) =>
@@ -96,4 +101,4 @@ const refreshToken = async (oldRefreshToken) => {
   return { token: newAccessToken, refreshToken: newRefreshToken };
 };
 
-module.exports = { authenticate, verifyJWT, refreshToken };
+module.exports = { authenticate, verifyJWT, refreshToken, addToFavourites };
