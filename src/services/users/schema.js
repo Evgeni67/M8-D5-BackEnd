@@ -32,17 +32,17 @@ UserSchema.methods.toJSON = function () {
   return userObject;
 };
 
-UserSchema.statics.findByCredentials = async (email, plainPW) => {
-  const user = await this.findOne({ email });
-
+UserSchema.statics.findByCredentials = async function (email, plainPW) {
+  const user = await this.findOne({ email })
+  console.log(user)
   if (user) {
-    const isMatch = await bcrypt.compare(plainPW, user.password);
-    if (isMatch) return user;
-    else return null;
+    const isMatch = await bcrypt.compare(plainPW, user.password)
+    if (isMatch) return user
+    else return null
   } else {
-    return null;
+    return null
   }
-};
+}
 
 UserSchema.pre("save", async function (next) {
   const user = this;

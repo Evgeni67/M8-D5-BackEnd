@@ -1,11 +1,18 @@
 const jwt = require("jsonwebtoken")
-const UserModel = require("../users/schema")
+const UserModel = require("../services/users/schema")
 const { verifyJWT } = require("./tools")
 
 const authorize = async (req, res, next) => {
   try {
+    console.log(req.header("Authorization").replace("Bearer ", ""))
     const token = req.header("Authorization").replace("Bearer ", "")
-    const decoded = await verifyJWT(token)
+    try{
+      const decoded = await verifyJWT(token)
+
+    }catch(e){
+      console.log("verifyJWT problem")
+    }
+    console.log(decoded)
     const user = await UserModel.findOne({
       _id: decoded._id,
     })

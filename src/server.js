@@ -16,13 +16,12 @@ const {
 const server = express()
 
 server.use(cors())
-const port = process.env.PORT
+const port = process.env.PORT 
 
 const staticFolderPath = join(__dirname, "../public")
 server.use(express.static(staticFolderPath))
 server.use(express.json())
 
-server.use("/books", booksRouter)
 server.use("/users", usersRouter)
 
 // ERROR HANDLERS MIDDLEWARES

@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../users/schema");
+const User = require("../services/users/schema");
 
 const authenticate = async (user) => {
   try {
@@ -30,9 +30,12 @@ const generateJWT = (payload) =>
   );
 
 const verifyJWT = (token) =>
+console.log("token to verify ", token)
+console.log("secret ->", process.env.JWT_SECRET)
+
   new Promise((res, rej) =>
     jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
-      if (err) rej(err);
+      if (err) rej(err + "yea here we are");
       res(decoded);
     })
   );
