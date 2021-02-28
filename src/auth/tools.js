@@ -30,7 +30,7 @@ const generateJWT = (payload) =>
   );
 addToFavourites = async (id, city) => {
   try {
-    const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(id),{$addToSet:{favourites:city}});
+    const user = await User.findByIdAndUpdate(mongoose.Types.ObjectId(id),{$addToSet:{favourites:city}},{new:true});
     console.log(user)
     return user;
   } catch (err) {
