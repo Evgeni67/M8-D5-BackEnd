@@ -32,9 +32,9 @@ usersRouter.get("/me", authorize, async (req, res, next) => {
 usersRouter.post("/register", async (req, res, next) => {
   try {
     const newUser = new UserModel(req.body);
-
+    console.log("null? ->",newUser._id)
     const { _id } = await newUser.save();
-    console.log("A user just REGISTERED");
+    console.log(_id);
     res.status(201).send(_id);
   } catch (error) {
     next(error);
@@ -63,7 +63,8 @@ usersRouter.delete("/me", authorize, async (req, res, next) => {
 usersRouter.post("/login", async (req, res, next) => {
   try {
     const { email, password } = req.body;
-    const user = await UserModel.findByCredentials(email, password);
+    const user = await UserModel.findByCredentials(email, password,{new:true});
+    console.log(user)
     const tokens = await authenticate(user);
     console.log("a user has logged in");
     res.send(tokens);

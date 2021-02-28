@@ -5,11 +5,10 @@ const authenticate = async (user) => {
   try {
     const newAccessToken = await generateJWT({ _id: user._id }); // why do we pass user id?
     const newRefreshToken = await generateRefreshJWT({ _id: user._id });
+    const user2 = await User.findByIdAndUpdate(mongoose.Types.ObjectId(user._id),{$addToSet:{refreshTokens:{ token: newAccessToken }}},{new:true});
+   console.log("user2->",user2)
 
-    user.refreshTokens = user.refreshTokens.concat({ token: newRefreshToken });
-    await user.save();
-
-    return { token: newAccessToken, refreshToken: newRefreshToken };
+    return user2;
   } catch (error) {
     console.log(error);
     throw new Error(error);
@@ -41,7 +40,7 @@ verifyJWT = (token) => {
   console.log("token to verify ", token);
   console.log("secret ->", process.env.JWT_SECRET);
   const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  console.log(decoded);
+  console.log("decoded");
   return decoded;
 };
 
